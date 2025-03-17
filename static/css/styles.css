@@ -4,6 +4,10 @@ body {
     margin: 0;
     padding: 0;
 }
+h3 {
+    color: #333;
+    text-align: center;
+}
 nav ul {
     list-style: none;
     background: #333;

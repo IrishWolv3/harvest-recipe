@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .models import Recipe
 
 # Custom user creation form (for registration)
 class CustomUserCreationForm(UserCreationForm):
@@ -24,3 +25,14 @@ class CustomAuthenticationForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'})) # Adding class to username field
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'})) # Adding class to password fieldS
 
+# User profile form (for profile management)
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+# Recipe form (CRUD operations)
+class RecipeForm(forms.ModelForm):
+    class Meta:
+        model = Recipe
+        fields = ['title', 'description', 'ingredients', 'instructions']
