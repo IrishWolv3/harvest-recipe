@@ -3,6 +3,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.timezone import now
 
+######### User Management #########
+
 # Custom User Model
 class User(AbstractUser):
     bio = models.TextField(blank=True, null=True) # Bio attribute
@@ -10,7 +12,6 @@ class User(AbstractUser):
 
     groups = models.ManyToManyField(Group, related_name="custom_user_set", blank=True) # Many-to-many relationship with Group model
     user_permissions = models.ManyToManyField(Permission, related_name="custom_permission_set", blank=True) # Many-to-many relationship with Permission model
-
 
 # User profile model (extends built-in Django User)
 class UserProfile(models.Model):
@@ -26,15 +27,18 @@ def default_user():
     first_user = User.objects.first()
     return first_user.id if first_user else None  # Ensure it returns None if no user exists
 
+######## Recipe & Ingredient Management #########
+
 # Recipe Model
 class Recipe(models.Model):
     User = get_user_model()
     title = models.CharField(max_length=255)
-    description = models.TextField()
-    ingredients = models.TextField()
-    instructions = models.TextField()
+    image = models.ImageField(upload_to='recipe_images/', blank=True, null=True)
+    description = models.TextField(null=True)  # Description field with auto_now_add
+    ingredients = models.TextField(null=True)  # Ingredients field with auto_now_add
+    instructions = models.TextField(null=True)  # Instructions field with auto_now_add
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True) 
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     likes = models.ManyToManyField(User, related_name='liked_recipes', blank=True)
     rating = models.FloatField(default=0.0)
@@ -55,3 +59,13 @@ class Ingredient(models.Model):
 
     def __str__(self): # String representation
         return f"{self.quantity} of {self.name}" 
+
+# Group Model
+class Group(models.Model):
+    name = models.CharField(max_length=255, unique=True) # Unique name for the group
+    description = models.TextField(blank=True) # Optional description
+    created_at = models.DateTimeField(auto_now_add=True) # Creation timestamp
+    members = models.ManyToManyField(User, related_name='groups', blank=True) # Many-to-many relationship with User
+
+    def __str__(self): # String representation
+        return self.name

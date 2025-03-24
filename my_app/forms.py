@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import Recipe
+from .models import Recipe, Group
 
 # Custom user creation form (for registration)
 class CustomUserCreationForm(UserCreationForm):
@@ -35,4 +35,10 @@ class UserProfileForm(forms.ModelForm):
 class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
-        fields = ['title', 'description', 'ingredients', 'instructions']
+        fields = ['title', 'description', 'ingredients', 'instructions', 'image'] # Fields included in the form
+
+# Group form (for group management)
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['name', 'description']

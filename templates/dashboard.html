@@ -7,7 +7,7 @@
         {% for recipe in recipes %}
             <li>{{ recipe.title }} - <a href="#">View</a></li>
         {% empty %}
-            <li>No recipes yet. <a href="#">Add one</a></li>
+        <a href="{% url 'recipe_create' %}" class="btn btn-primary">Add Recipe</a>
         {% endfor %}
     </ul>
 {% endblock %}

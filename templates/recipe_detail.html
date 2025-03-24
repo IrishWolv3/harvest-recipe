@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ recipe.title }}</h2>
+{% if recipe.image %}
+    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" width="400">
+{% endif %}
+<p>{{ recipe.description }}</p>
+<p>Likes: {{ recipe.likes.count }}</p>
+<p>Rating: {{ recipe.rating|floatformat:1 }} ({{ recipe.rating_count }} ratings)</p>
+<p><strong>Ingredients:</strong> {{ recipe.ingredients }}</p>
+<p><strong>Instructions:</strong> {{ recipe.instructions }}</p>
+<!-- Like Button -->
+<form method="POST" action="{% url 'like_recipe' recipe.id %}">
+    {% csrf_token %}
+    <button type="submit">
+        {% if user in recipe.likes.all %}
+            Unlike
+        {% else %}
+            Like
+        {% endif %}
+    </button>
+</form>
+
+<!-- Rating Form -->
+<form method="POST" action="{% url 'rate_recipe' recipe.id %}">
+    {% csrf_token %}
+    <input type="number" name="rating" min="1" max="5" step="0.1" required>
+    <button type="submit">Rate</button>
+</form>
+<a href="{% url 'recipe_update' recipe.id %}">Edit</a>
+<a href="{% url 'recipe_delete' recipe.id %}">Delete</a>
+<a href="{% url 'recipe_list' %}">Back to Recipes</a>
+{% endblock %}

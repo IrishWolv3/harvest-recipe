@@ -2,7 +2,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Recipe
+from .models import Recipe, Group
 from .forms import CustomUserCreationForm, CustomAuthenticationForm, UserProfileForm, RecipeForm
 
 ################################## Front end applications #############################
@@ -59,12 +59,12 @@ def profile(request):
     return render(request, 'profile.html') # Render the profile.html template
 
 ############################ Recipe Management #############################
-@login_required
-def recipe_list(request): # Ensure the user is logged in to view the recipe list
+# Recipe List View
+def recipe_list(request): 
     recipes = Recipe.objects.all()  # Fetch all recipes
     return render(request, 'recipe_list.html', {'recipes': recipes})  # Render the recipe list template
 
-@login_required # Ensure the user is logged in to view a recipe
+# Recipe Detail View
 def recipe_detail(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)  # Fetch the specific recipe
     return render(request, 'recipe_detail.html', {'recipe': recipe})  # Render the recipe detail template
@@ -72,12 +72,14 @@ def recipe_detail(request, recipe_id):
 @login_required # Ensure the user is logged in to create a recipe
 def recipe_create(request):
     if request.method == 'POST':
-        form = RecipeForm(request.POST)
+        form = RecipeForm(request.POST, request.FILES)
         if form.is_valid():
             recipe = form.save(commit=False)
             recipe.author = request.user
             recipe.save()
             return redirect('recipe_list')
+        else:
+            print(form.errors)  # Debugging line
     else:
         form = RecipeForm()
     return render(request, 'recipe_form.html', {'form': form})  # Render the recipe creation form template
@@ -86,7 +88,7 @@ def recipe_create(request):
 def recipe_update(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id, author=request.user)
     if request.method == 'POST':
-        form = RecipeForm(request.POST, instance=recipe)
+        form = RecipeForm(request.POST, request.FILES, instance=recipe)
         if form.is_valid():
             form.save()
             return redirect('recipe_detail', recipe_id=recipe.id)
@@ -118,3 +120,9 @@ def rate_recipe(request, recipe_id):
         rating = float(request.POST.get('rating')) # Get the rating from the form
         recipe.update_rating(rating)
         return redirect('recipe_detail', recipe_id=recipe.id)  # Redirect to the recipe detail page after rating
+
+############################ Group Management #############################
+@login_required
+def group_list(request): # List all groups
+    groups = Group.objects.all() # Fetch all groups
+    return render(request, 'groups/group_list.html', {'groups': groups}) # Render the group list template
