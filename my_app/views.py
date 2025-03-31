@@ -1,9 +1,8 @@
-from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Recipe, Group
-from .forms import CustomUserCreationForm, CustomAuthenticationForm, UserProfileForm, RecipeForm
+from .forms import CustomUserCreationForm, CustomAuthenticationForm, UserProfileForm, RecipeForm, GroupForm
 
 ################################## Front end applications #############################
 def index(request):
@@ -126,3 +125,33 @@ def rate_recipe(request, recipe_id):
 def group_list(request): # List all groups
     groups = Group.objects.all() # Fetch all groups
     return render(request, 'groups/group_list.html', {'groups': groups}) # Render the group list template
+
+# Create Group View
+@login_required
+def group_create(request): # Create a new group
+    if request.method == 'POST':
+        form = GroupForm(request.POST)
+        if form.is_valid():
+            group = form.save()
+            group.members.add(request.user)  # Creator joins automatically
+            return redirect('group_list')
+    else:
+        form = GroupForm()
+    return render(request, 'groups/group_form.html', {'form': form}) # Render the group creation form template
+
+@login_required
+def group_detail(request, group_id):
+    group = get_object_or_404(Group, id=group_id)
+    return render(request, 'groups/group_detail.html', {'group': group})
+
+@login_required
+def join_group(request, group_id):
+    group = get_object_or_404(Group, id=group_id)
+    group.members.add(request.user)
+    return redirect('group_detail', group_id=group.id)
+
+@login_required
+def leave_group(request, group_id):
+    group = get_object_or_404(Group, id=group_id)
+    group.members.remove(request.user)
+    return redirect('group_list')

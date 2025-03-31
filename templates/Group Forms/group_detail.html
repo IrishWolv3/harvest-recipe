@@ -1,0 +1,9 @@
+<h2>{{ group.name }}</h2>
+<p>{{ group.description }}</p>
+<p>Members: {{ group.members.count }}</p>
+
+{% if request.user in group.members.all %}
+    <a href="{% url 'leave_group' group.id %}">Leave Group</a>
+{% else %}
+    <a href="{% url 'join_group' group.id %}">Join Group</a>
+{% endif %}

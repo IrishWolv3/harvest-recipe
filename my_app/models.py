@@ -65,7 +65,7 @@ class Group(models.Model):
     name = models.CharField(max_length=255, unique=True) # Unique name for the group
     description = models.TextField(blank=True) # Optional description
     created_at = models.DateTimeField(auto_now_add=True) # Creation timestamp
-    members = models.ManyToManyField(User, related_name='groups', blank=True) # Many-to-many relationship with User
+    members = models.ManyToManyField(User, related_name='custom_groups', blank=True) # Many-to-many relationship with User
 
     def __str__(self): # String representation
         return self.name

@@ -1,0 +1,11 @@
+<h2>Groups</h2>
+<a href="{% url 'group_create' %}">Create Group</a>
+<ul>
+    {% for group in groups %}
+        <li>
+            <a href="{% url 'group_detail' group.id %}">{{ group.name }}</a>
+        </li>
+    {% empty %}
+        <p>No groups available.</p>
+    {% endfor %}
+</ul>
