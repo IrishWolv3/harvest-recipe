@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Your Ingredient Trip List</h2>
+<ul>
+  {% for item in items %}
+    <li>{{ item.ingredient.name }} (added on {{ item.added_on|date:"M d, Y" }})</li>
+  {% endfor %}
+</ul>
+{% endblock %}

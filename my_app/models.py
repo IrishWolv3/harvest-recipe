@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser, Group, Permission, User
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.timezone import now
+from django.utils import timezone
+
 
 ######### User Management #########
 
@@ -35,7 +37,7 @@ class Recipe(models.Model):
     title = models.CharField(max_length=255)
     image = models.ImageField(upload_to='recipe_images/', blank=True, null=True)
     description = models.TextField(null=True)  # Description field with auto_now_add
-    ingredients = models.TextField(null=True)  # Ingredients field with auto_now_add
+    ingredients = models.ManyToManyField('Ingredient', related_name='recipes')  # Ingredients field with auto_now_add
     instructions = models.TextField(null=True)  # Instructions field with auto_now_add
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True) 
@@ -60,6 +62,7 @@ class Ingredient(models.Model):
     def __str__(self): # String representation
         return f"{self.quantity} of {self.name}" 
 
+
 # Group Model
 class Group(models.Model):
     name = models.CharField(max_length=255, unique=True) # Unique name for the group
@@ -69,3 +72,24 @@ class Group(models.Model):
 
     def __str__(self): # String representation
         return self.name
+# WeeklyVote Model
+class WeeklyVote(models.Model): 
+    user = models.ForeignKey(User, on_delete=models.CASCADE) # ForeignKey to User model
+    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE) # ForeignKey to Recipe model
+    week_start = models.DateField(default=timezone.now) # Start date of the week (default is current date)
+
+    class Meta:
+        unique_together = ('user', 'week_start')  # One vote per user per week
+
+    def __str__(self):
+        return f"{self.user.username} voted for {self.recipe.title} ({self.week_start})"
+    
+
+###### Ingredient Trip System ######
+class IngredientTrip(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey('Ingredient', on_delete=models.CASCADE)
+    added_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'ingredient')

@@ -24,4 +24,7 @@ urlpatterns = [
     path('', include('my_app.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('recipes_list/', include('my_app.urls')),
+    path('groups/', include('my_app.urls')),
+    path('trip/', include('my_app.urls')),
+    path('chatbot/', include('my_app.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

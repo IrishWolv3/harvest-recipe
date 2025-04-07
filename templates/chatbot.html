@@ -1,0 +1,55 @@
+<!-- chatbot.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HarvestArk Chatbot</title>
+    <style>
+        /* Simple styles for chatbot UI */
+        .chat-container {
+            width: 300px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            margin: 0 auto;
+        }
+        .chat-log {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        .chat-box {
+            width: 100%;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="chat-container">
+    <h3>HarvestArk Bot</h3>
+    <div class="chat-log" id="chat-log">
+        <!-- Chat messages will appear here -->
+    </div>
+    <input type="text" id="user-input" class="chat-box" placeholder="Ask me anything..." />
+    <button onclick="sendMessage()">Send</button>
+</div>
+<script>
+    function sendMessage() {
+        const userInput = document.getElementById("user-input").value;
+        const chatLog = document.getElementById("chat-log");
+        if (userInput.trim() === "") return;
+        // Display the user's message
+        chatLog.innerHTML += "<div><strong>You:</strong> " + userInput + "</div>";
+        // Send the message to the backend
+        fetch(`/chatbot/?question=${encodeURIComponent(userInput)}`)
+            .then(response => response.json())
+            .then(data => {
+                // Display the chatbot's response
+                chatLog.innerHTML += "<div><strong>Bot:</strong> " + data.response + "</div>";
+                document.getElementById("user-input").value = '';  // Clear the input field
+                chatLog.scrollTop = chatLog.scrollHeight;  // Scroll to the bottom
+            });
+    }
+</script>
+</body>
+</html>

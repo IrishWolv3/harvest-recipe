@@ -19,8 +19,10 @@
                 <li class="nav-item"><a class="nav-link" href="/recipe_list/">Recipes</a></li>
                 {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="/dashboard/">Dashboard</a></li>
+                    <a href="{% url 'group_main' %}">Groups</a>
                     <li class="nav-item"><a class="nav-link" href="/profile/">Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="/logout/">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/trip/">Trip List</a></li>
                 {% else %}
                     <li class="nav-item"><a class="nav-link" href="/login/">Login</a></li>
                     <li class="nav-item"><a class="nav-link" href="/register/">Register</a></li>
