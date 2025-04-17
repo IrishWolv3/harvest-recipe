@@ -4,6 +4,7 @@
 <ul>
   {% for item in items %}
     <li>{{ item.ingredient.name }} (added on {{ item.added_on|date:"M d, Y" }})</li>
+    <input type="text" name="ingredient_{{ item.ingredient.id }}" value="{{ item.ingredient.name }}" class="ingredient-input"/>
   {% endfor %}
 </ul>
 {% endblock %}
