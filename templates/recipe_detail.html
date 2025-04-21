@@ -1,42 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<head>
-<style>
-.ingredient-list {
-    list-style: none;
-    padding-left: 0;
-    margin-top: 10px;
-  }
-.ingredient-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 12px;
-    margin-bottom: 8px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    font-size: 16px; /* Good readable size */
-}
-.ingredient-item span {
-      flex-grow: 1;
-    }
 
-.add-to-trip {
-    padding: 6px 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-}
-.add-to-trip:hover {
-      background-color: #45a049;
-}
-</style>
-</head>
 <h2>{{ recipe.title }}</h2>
 
 {% if recipe.image %}
@@ -52,7 +17,6 @@
     {% for ingredient in recipe.ingredients.all %}
         <li class="ingredient-item">
             <span>{{ ingredient.name }}</span>
-            <input type ="text" name="ingredient_{{ ingredient.id }}" value="{{ ingredient.name }}" class="ingredient-input" />
             <button class="add-to-trip" data-id="{{ ingredient.id }}">Add to Trip List</button>
         </li>
     {% empty %}

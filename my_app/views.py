@@ -1,11 +1,13 @@
 from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Recipe, Group, WeeklyVote, Recipe
+from .models import Recipe, Group, WeeklyVote, Ingredient, IngredientTrip
 from .forms import CustomUserCreationForm, CustomAuthenticationForm, UserProfileForm, RecipeForm, GroupForm
 from datetime import date, timedelta
 from django.utils import timezone
 from django.http import JsonResponse
+from django.db import models
+import spacy
 
 ################################## Front end applications #############################
 def index(request):
@@ -62,9 +64,33 @@ def profile(request):
 
 ############################ Recipe Management #############################
 # Recipe List View
-def recipe_list(request): 
-    recipes = Recipe.objects.all()  # Fetch all recipes
-    return render(request, 'recipe_list.html', {'recipes': recipes})  # Render the recipe list template
+def recipe_list(request):
+    query = request.GET.get('q', '')
+    filter_rating = request.GET.get('rating')
+
+    recipes = Recipe.objects.all()
+
+    if query:
+        recipes = recipes.filter(title__icontains=query)
+    if filter_rating:
+        try:
+            filter_value = float(filter_rating)
+            recipes = recipes.filter(rating__gte=filter_value)
+        except ValueError:
+            pass
+
+    # Get top voted recipe of the week
+    week_start = get_current_week_start()
+    votes = WeeklyVote.objects.filter(week_start=week_start)
+    top_recipes = votes.values('recipe').annotate(total=models.Count('id')).order_by('-total')
+    top_recipe = Recipe.objects.get(id=top_recipes[0]['recipe']) if top_recipes else None
+
+    return render(request, 'recipe_list.html', {
+        'recipes': recipes,
+        'top_recipe': top_recipe,
+        'query': query,
+        'filter_rating': filter_rating
+    })
 
 # Recipe Detail View
 def recipe_detail(request, recipe_id):
@@ -76,20 +102,33 @@ def recipe_detail(request, recipe_id):
         'ingredients': ingredients,  # Pass ingredients to the template
     })
 
-@login_required # Ensure the user is logged in to create a recipe
+@login_required
 def recipe_create(request):
     if request.method == 'POST':
-        form = RecipeForm(request.POST, request.FILES)
-        if form.is_valid():
-            recipe = form.save(commit=False)
-            recipe.author = request.user
-            recipe.save()
-            return redirect('recipe_list')
-        else:
-            print(form.errors)  # Debugging line
-    else:
-        form = RecipeForm()
-    return render(request, 'recipe_form.html', {'form': form})  # Render the recipe creation form template
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        instructions = request.POST.get('instructions')
+        image = request.FILES.get('image')
+        ingredient_names = request.POST.get('ingredients', '').split(',')
+
+        recipe = Recipe.objects.create(
+            title=title,
+            description=description,
+            instructions=instructions,
+            image=image,
+            author=request.user
+        )
+
+        for name in ingredient_names:
+            name = name.strip()
+            if name:
+                ingredient, _ = Ingredient.objects.get_or_create(name=name)
+                recipe.ingredients.add(ingredient)
+
+        return redirect('dashboard')  # Or wherever you want to redirect
+
+    # GET request
+    return render(request, 'recipe_form.html')  # Render the recipe creation form template
 
 @login_required # Ensure the user is logged in to update a recipe
 def recipe_update(request, recipe_id):
@@ -206,19 +245,27 @@ def view_trip_list(request):
 
 
 
-###### Chat bot system ######
+########## Hybrid Chatbot ##########
+# Load spaCy for NLP fallback
+nlp = spacy.load("en_core_web_sm")
 
-# Predefined responses
 RESPONSE_DICT = {
-    "how do I add a recipe": "Go to your dashboard and click on 'Add Recipe'.",
+    "how do i add a recipe": "Go to your dashboard and click on 'Add Recipe'.",
     "what is ingredient trip": "It's a list where you can save ingredients you need to buy.",
-    "how do I vote for a dish": "Visit the 'Top Dish' section in the community tab and vote for your favorite!",
-    "how do I contact support": "You can reach us through the 'Contact Us' page in the footer.",
-    # More to be added
+    "how do i vote for a dish": "Visit the 'Top Dish' section in the community tab and vote for your favorite!",
+    "how do i contact support": "You can reach us through the 'Contact Us' page in the footer.",
 }
 
+def handle_with_nlp(user_input):
+    doc = nlp(user_input)
+    ingredients = [ent.text for ent in doc.ents if ent.label_ in ['FOOD', 'PRODUCT']]
+    if ingredients:
+        return f"Looking for recipes with {', '.join(ingredients)}? Try the search bar above!"
+    return "Sorry, I didn’t get that. Try rephrasing?"
 
 def chatbot_response(request):
-    user_input = request.GET.get("question", "").lower()  # Get user input and convert to lowercase
-    response = RESPONSE_DICT.get(user_input, "Sorry, I didn’t get that. Try rephrasing?")
+    user_input = request.GET.get("question", "").lower()
+    response = RESPONSE_DICT.get(user_input)
+    if not response:
+        response = handle_with_nlp(user_input)
     return JsonResponse({"response": response})

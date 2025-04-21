@@ -19,7 +19,7 @@
                 <li class="nav-item"><a class="nav-link" href="/recipe_list/">Recipes</a></li>
                 {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="/dashboard/">Dashboard</a></li>
-                    <a href="{% url 'group_main' %}">Groups</a>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'group_main' %}">Groups</a>
                     <li class="nav-item"><a class="nav-link" href="/profile/">Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="/logout/">Logout</a></li>
                     <li class="nav-item"><a class="nav-link" href="/trip/">Trip List</a></li>
@@ -36,5 +36,99 @@
     <footer>
         <p>&copy; 2025 HarvestArk. All rights reserved.</p>
     </footer>
+<!-- Chatbot -->
+<style>
+    #chatbot-bubble {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 999;
+    }
+    #chat-window {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 300px;
+        height: 350px;
+        background: white;
+        border: 1px solid #ccc;
+        display: none;
+        flex-direction: column;
+        z-index: 999;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+    #chat-window header {
+        padding: 10px;
+        background: #4CAF50;
+        color: white;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        font-weight: bold;
+    }
+    #chat-log {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        font-size: 14px;
+    }
+    #chat-input {
+        display: flex;
+        padding: 10px;
+        border-top: 1px solid #eee;
+    }
+    #chat-input input {
+        flex: 1;
+        padding: 6px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    #chat-input button {
+        margin-left: 5px;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 4px;
+    }
+</style>
+<button id="chatbot-bubble" onclick="toggleChat()">💬</button>
+<div id="chat-window">
+    <header>HarvestBot</header>
+    <div id="chat-log"></div>
+    <div id="chat-input">
+        <input type="text" id="user-input" placeholder="Ask me anything..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script>
+    function toggleChat() {
+        const chat = document.getElementById("chat-window");
+        chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+    }
+
+    function sendMessage() {
+        const userInput = document.getElementById("user-input").value;
+        const chatLog = document.getElementById("chat-log");
+        if (userInput.trim() === "") return;
+        chatLog.innerHTML += `<div><strong>You:</strong> ${userInput}</div>`;
+        fetch(`/chatbot/?question=${encodeURIComponent(userInput)}`)
+            .then(response => response.json())
+            .then(data => {
+                chatLog.innerHTML += `<div><strong>Bot:</strong> ${data.response}</div>`;
+                document.getElementById("user-input").value = '';
+                chatLog.scrollTop = chatLog.scrollHeight;
+            });
+    }
+</script>
 </body>
 </html>

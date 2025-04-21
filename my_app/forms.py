@@ -36,6 +36,7 @@ class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
         fields = ['title', 'description', 'ingredients', 'instructions', 'image'] # Fields included in the form
+        exclude = ['ingredients']
 
 # Group form (for group management)
 class GroupForm(forms.ModelForm):

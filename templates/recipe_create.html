@@ -1,60 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Submit a Recipe</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: auto;
-      padding: 20px;
-    }
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 15px;
-    }
-    input[type="text"],
-    textarea {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-    }
-    input[type="file"] {
-      margin-top: 5px;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
+{% extends 'base.html' %}
 
-    <h2>Submit Your Recipe</h2>
-  
-    <form action="{% url 'submit_recipe' %}" method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
-      
-      <label for="title">Recipe Title:</label>
-      <input type="text" id="title" name="title" value="{{ request.POST.title }}" required>
-  
-      <label for="description">Short Description:</label>
-      <textarea id="description" name="description" rows="3" required>{{ request.POST.description }}</textarea>
-  
-      <label for="ingredients">Ingredients (one per line):</label>
-      <textarea id="ingredients" name="ingredients" rows="5" required>{{ request.POST.ingredients }}</textarea>
-  
-      <label for="instructions">Instructions:</label>
-      <textarea id="instructions" name="instructions" rows="6" required>{{ request.POST.instructions }}</textarea>
-  
-      <label for="image">Upload an Image:</label>
-      <input type="file" id="image" name="image" accept="image/*">
-  
-      <button type="submit">Submit Recipe</button>
-    </form>
-  
-  </body>
-  </html>
+{% block content %}
+  <h2>Create Recipe</h2>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label for="title">Title:</label><br>
+    <input type="text" name="title" id="title" required><br><br>
+
+    <label for="description">Description:</label><br>
+    <textarea name="description" id="description" rows="3" cols="50"></textarea><br><br>
+
+    <label for="ingredients">Ingredients (separate with commas):</label><br>
+    <textarea name="ingredients" rows="4" cols="50" placeholder="e.g., Chicken, Rice, Egg"></textarea><br><br>
+
+    <label for="instructions">Instructions:</label><br>
+    <textarea name="instructions" id="instructions" rows="5" cols="50"></textarea><br><br>
+
+    <label for="image">Image:</label><br>
+    <input type="file" name="image" id="image"><br><br>
+
+    <button type="submit">Save</button>
+    <a href="{% url 'recipe_list' %}">Cancel</a>
+  </form>
+{% endblock %}

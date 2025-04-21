@@ -2,14 +2,41 @@
 {% block content %}
 <h2>Recipes</h2>
 <a href="{% url 'recipe_create' %}">Create a New Recipe</a>
-<ul>
+
+{% if top_recipe %}
+    <div style="border: 2px solid gold; padding: 10px; margin: 20px 0; background-color: #fff8dc;">
+        🏆 <strong>Top Dish of the Week!</strong>
+        <h3>{{ top_recipe.title }}</h3>
+        {% if top_recipe.image %}
+            <img src="{{ top_recipe.image.url }}" alt="{{ top_recipe.title }}" width="200">
+        {% endif %}
+        <p>{{ top_recipe.description }}</p>
+        <a href="{% url 'recipe_detail' top_recipe.id %}">View</a>
+    </div>
+{% endif %}
+
+<form method="get" action="{% url 'recipe_list' %}" style="margin-bottom: 20px;">
+    <input type="text" name="q" placeholder="Search recipes..." value="{{ query }}" />
+    <select name="rating">
+        <option value="">Filter by rating</option>
+        <option value="1" {% if filter_rating == "1" %}selected{% endif %}>1+</option>
+        <option value="2" {% if filter_rating == "2" %}selected{% endif %}>2+</option>
+        <option value="3" {% if filter_rating == "3" %}selected{% endif %}>3+</option>
+        <option value="4" {% if filter_rating == "4" %}selected{% endif %}>4+</option>
+    </select>
+    <button type="submit">Apply</button>
+</form>
+
+<!-- Grid container -->
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+
     {% for recipe in recipes %}
-        <div>
+        <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; background-color: #f9f9f9;">
             {% if recipe.image %}
-                <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" width="200">
+                <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" style="width: 100%; height: auto;">
             {% endif %}
-            <h2>{{ recipe.title }}</h2>
-            <p>{{ recipe.description }}</p>
+            <h3>{{ recipe.title }}</h3>
+            <p>{{ recipe.description|truncatechars:100 }}</p>
             <p>Likes: {{ recipe.likes.count }}</p>
             <p>Rating: {{ recipe.rating|floatformat:1 }} ({{ recipe.rating_count }} ratings)</p>
             <a href="{% url 'recipe_detail' recipe.id %}">View Recipe</a>
@@ -17,5 +44,6 @@
     {% empty %}
         <p>No recipes found.</p>
     {% endfor %}
-</ul>
+
+</div>
 {% endblock %}

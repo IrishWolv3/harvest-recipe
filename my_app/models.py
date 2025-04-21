@@ -31,14 +31,21 @@ def default_user():
 
 ######## Recipe & Ingredient Management #########
 
-# Recipe Model
+class Ingredient(models.Model):
+    name = models.CharField(max_length=255, unique=True)  # Optional: prevent duplicate ingredients
+
+    def __str__(self):
+        return self.name
+
+
 class Recipe(models.Model):
     User = get_user_model()
+
     title = models.CharField(max_length=255)
     image = models.ImageField(upload_to='recipe_images/', blank=True, null=True)
-    description = models.TextField(null=True)  # Description field with auto_now_add
-    ingredients = models.ManyToManyField('Ingredient', related_name='recipes')  # Ingredients field with auto_now_add
-    instructions = models.TextField(null=True)  # Instructions field with auto_now_add
+    description = models.TextField(null=True)
+    ingredients = models.ManyToManyField(Ingredient, related_name='recipes')  
+    instructions = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True) 
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -50,17 +57,10 @@ class Recipe(models.Model):
         total_rating = self.rating * self.rating_count + new_rating
         self.rating_count += 1
         self.rating = total_rating / self.rating_count
-        self.save() 
+        self.save()
 
     def __str__(self):
         return self.title
-# Ingredient Model
-class Ingredient(models.Model):
-    name = models.CharField(max_length=255)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='recipe_ingredients')
-
-    def __str__(self): # String representation
-        return f"{self.quantity} of {self.name}" 
 
 
 # Group Model
@@ -92,4 +92,6 @@ class IngredientTrip(models.Model):
     added_on = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('user', 'ingredient')
+        constraints = [
+        models.UniqueConstraint(fields=['user', 'ingredient'], name='unique_user_ingredient_trip')
+    ]
