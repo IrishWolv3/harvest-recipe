@@ -62,6 +62,14 @@ def profile(request):
         form = UserProfileForm(instance=request.user) # Create an instance of the form
     return render(request, 'profile.html') # Render the profile.html template
 
+@login_required
+def delete_account(request):
+    user = request.user
+    if request.method == 'POST':
+        user.delete()
+        return redirect('home')  # or wherever you want to land them
+    return redirect('profile')
+
 ############################ Recipe Management #############################
 # Recipe List View
 def recipe_list(request):
@@ -125,7 +133,7 @@ def recipe_create(request):
                 ingredient, _ = Ingredient.objects.get_or_create(name=name)
                 recipe.ingredients.add(ingredient)
 
-        return redirect('dashboard') 
+        return redirect('recipe_list') 
 
     # GET request
     return render(request, 'recipe_form.html')  # Render the recipe creation form template
@@ -140,7 +148,7 @@ def recipe_update(request, recipe_id):
             return redirect('recipe_detail', recipe_id=recipe.id)
     else:
         form = RecipeForm(instance=recipe)
-    return render(request, 'recipe_form.html', {'form': form})  # Render the recipe update form template
+    return render(request, 'recipe_update.html', {'form': form})  # Render the recipe update form template
 
 @login_required # Ensure the user is logged in to delete a recipe
 def recipe_delete(request, recipe_id):
@@ -275,18 +283,76 @@ RESPONSE_DICT = {
     "what is ingredient trip": "It's a list where you can save ingredients you need to buy.",
     "how do i vote for a dish": "Visit the 'Top Dish' section in the community tab and vote for your favorite!",
     "how do i contact support": "You can reach us through the 'Contact Us' page in the footer.",
+    "how do i edit a recipe": "Visit your profile, click the recipe, then select 'Edit'.",
+    "how do i delete a recipe": "From the recipe page, click 'Delete' at the bottom.",
+    "can i join a group": "Yes! Go to the 'Groups' tab and click 'Join' on any group you like.",
+    "how do i leave a group": "Open the group page and click 'Leave Group' at the top.",
+    "how do i see my group": "Go to your profile, and you’ll see the group you're part of.",
+    "how do i add ingredients to my trip list": "Click the 'Add to Trip List' button beside each ingredient in a recipe.",
+    "how do i remove ingredients from my trip list": "Go to your Ingredient Trip List and click the delete button next to the item.",
+    "what is top dish of the week": "It's a recipe voted most popular this week by the community.",
+    "how do i vote for top dish": "On the recipe page, you’ll find a 'Vote as Top Dish' button.",
+    "how do i search for recipes": "Use the search bar at the top of the recipe list page.",
+    "how do i reset my password": "Go to login, click 'Forgot Password', and follow the instructions.",
+    "how do i change my email": "Visit your profile, then edit your information and save.",
+    "can i message other users": "Not yet, but we’re working on a messaging feature!",
+    "what file types can i upload for recipe images": "JPG, PNG, and GIF formats are accepted.",
+    "why is my recipe not saving": "Make sure all required fields are filled and your image size is under the limit.",
+    "how do i report an issue": "Use the 'Contact Us' form or report it in your group discussion.",
+    "how are recipes rated": "Other users rate your recipes from 1 to 5 stars.",
+    "what are likes": "Likes are quick reactions users can give to recipes they enjoy.",
 }
 
 def handle_with_nlp(user_input):
     doc = nlp(user_input)
-    ingredients = [ent.text for ent in doc.ents if ent.label_ in ['FOOD', 'PRODUCT']]
-    if ingredients:
-        return f"Looking for recipes with {', '.join(ingredients)}? Try the search bar above!"
+    keywords = ['tomato', 'onion', 'chicken', 'beef', 'rice', 'garlic']  # add more
+    if any(word.lower() in user_input for word in keywords):
+        return f"Looking for recipes with {user_input}? Try the search bar above!"
     return "Sorry, I didn’t get that. Try rephrasing?"
 
 def chatbot_response(request):
     user_input = request.GET.get("question", "").lower()
+    topic = get_topic_from_question(user_input)
+
+    # Save the topic in session
+    if topic:
+        request.session["last_topic"] = topic
+    else:
+        topic = request.session.get("last_topic")
+
+    # Direct match
     response = RESPONSE_DICT.get(user_input)
+
+    # Handle vague questions with context
+    if not response and user_input in ["how do i do that", "where is that", "what now", "how does it work"]:
+        if topic == "recipe":
+            response = "Are you asking about a recipe? You can add, edit, or delete them from your dashboard or profile."
+        elif topic == "group":
+            response = "For groups, you can join or leave one from the Groups tab."
+        elif topic == "trip":
+            response = "You can manage your trip list from the Ingredient Trip section in your profile."
+        elif topic == "vote":
+            response = "You can vote for your favorite recipes directly from their pages."
+        elif topic == "profile":
+            response = "Profile options like changing email or password are in your profile tab."
+        else:
+            response = "Could you clarify your question?"
+    
+    # Fallback to NLP
     if not response:
         response = handle_with_nlp(user_input)
+
     return JsonResponse({"response": response})
+
+def get_topic_from_question(question):
+    keywords = {
+        "recipe": ["recipe", "edit", "delete", "add", "save"],
+        "group": ["group", "join", "leave"],
+        "trip": ["trip", "ingredient", "list"],
+        "vote": ["vote", "top dish"],
+        "profile": ["profile", "email", "password"],
+    }
+    for topic, terms in keywords.items():
+        if any(term in question for term in terms):
+            return topic
+    return None

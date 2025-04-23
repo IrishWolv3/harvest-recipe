@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import recipe_list, recipe_create, recipe_update, recipe_delete, like_recipe, rate_recipe, group_list, group_create, group_detail, join_group, leave_group, view_trip_list, add_to_trip_list, delete_from_trip_list
+from .views import delete_account, recipe_list, recipe_create, recipe_update, recipe_delete, like_recipe, rate_recipe, group_list, group_create, group_detail, join_group, leave_group, view_trip_list, add_to_trip_list, delete_from_trip_list
 
 urlpatterns = [
     path('', views.index, name='index'),            #### Frontend Paths
@@ -9,6 +9,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
+    path('delete-account/', views.delete_account, name='delete_account'),
     path('recipe_list/', recipe_list, name='recipe_list'),       ############## Recipe views   # Public recipe list ###############
     path('<int:recipe_id>/', views.recipe_detail, name='recipe_detail'),    # Public recipe details
     path('create/', recipe_create, name='recipe_create'),  # Requires login

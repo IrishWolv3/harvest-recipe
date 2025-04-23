@@ -1,14 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>Groups</h2>
-<a href="{% url 'group_create' %}">Create Group</a>
-<ul>
+<a href="{% url 'group_create' %}" class="btn btn-outline-secondary">Create Group</a>
     {% for group in groups %}
-        <li>
-            <a href="{% url 'group_detail' group.id %}">{{ group.name }}</a>
-        </li>
+        <a href="{% url 'group_detail' group.id %}" class="btn btn-outline-secondary">{{ group.name }}</a>
     {% empty %}
         <p>No groups available.</p>
     {% endfor %}
-</ul>
 {% endblock %}

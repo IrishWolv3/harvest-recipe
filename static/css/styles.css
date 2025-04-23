@@ -3,6 +3,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #fdf6e3;
 }
 h3 {
     color: #333;
@@ -91,21 +92,21 @@ footer {
     margin-top: 20px;
   }
   
-  .recipe-card {
+.recipe-card {
     background: #f9f9f9;
     border-radius: 12px;
     padding: 15px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     text-align: center;
-  }
+}
   
-  .recipe-img, .top-dish-img {
+.recipe-img, .top-dish-img {
     max-width: 100%;
     border-radius: 10px;
     margin-top: 10px;
-  }
+}
   
-  .view-btn {
+.view-btn {
     display: inline-block;
     margin-top: 10px;
     background-color: #4CAF50;
@@ -113,12 +114,54 @@ footer {
     padding: 8px 16px;
     border-radius: 8px;
     text-decoration: none;
-  }
+}
   
-  .top-dish-card {
+.top-dish-card {
     background-color: #fffbe6;
     padding: 20px;
     border: 2px solid #ffd700;
     border-radius: 15px;
     margin-bottom: 30px;
-  }
+}
+body {
+    background-color: #fdf6e3;
+}
+
+.navbar-nav .nav-item {
+    flex: 1;
+    text-align: center;
+}
+
+.navbar-nav .nav-link {
+    color: black !important;
+    font-weight: bold;
+    padding: 12px 0;
+}
+
+.btn-tan {
+    background-color: #deb887;
+    color: white;
+    border: none;
+}
+
+.btn-tan:hover {
+    background-color: #d2b48c;
+    color: white;
+}
+
+.container {
+    background-color: #fffaf0;
+    padding: 20px;
+    border-radius: 8px;
+}
+/* Center all text globally */
+body, h1, h2, h3, h4, h5, h6, p, a, li {
+    text-align: center;
+}
+
+/* Uniform button style if needed */
+.btn-outline-secondary {
+    padding: 10px 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}

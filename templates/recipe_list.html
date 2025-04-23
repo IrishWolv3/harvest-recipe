@@ -28,22 +28,26 @@
 </form>
 
 <!-- Grid container -->
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
-
+<div class="row">
     {% for recipe in recipes %}
-        <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; background-color: #f9f9f9;">
-            {% if recipe.image %}
-                <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" style="width: 100%; height: auto;">
-            {% endif %}
-            <h3>{{ recipe.title }}</h3>
-            <p>{{ recipe.description|truncatechars:100 }}</p>
-            <p>Likes: {{ recipe.likes.count }}</p>
-            <p>Rating: {{ recipe.rating|floatformat:1 }} ({{ recipe.rating_count }} ratings)</p>
-            <a href="{% url 'recipe_detail' recipe.id %}">View Recipe</a>
+        <div class="col-md-4 mb-4 text-center">
+            <a href="{% url 'recipe_detail' recipe.id %}" style="text-decoration: none; color: inherit;">
+                <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; background-color: #f9f1e5;">
+                    {% if recipe.image %}
+                        <div style="width: 100%; height: 200px; overflow: hidden; border-radius: 5px;">
+                            <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}"
+                                 style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                    {% endif %}
+                    <h3 class="mt-2">{{ recipe.title }}</h3>
+                    <p>{{ recipe.description|truncatechars:100 }}</p>
+                    <p>Likes: {{ recipe.likes.count }}</p> <p>Rating: {{ recipe.rating|floatformat:1 }} ({{ recipe.rating_count }} ratings)</p>
+                    <p>
+                        <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-outline-secondary">View Recipe</a>
+                    </p>
+                </div>
+            </a>
         </div>
-    {% empty %}
-        <p>No recipes found.</p>
     {% endfor %}
-
 </div>
 {% endblock %}

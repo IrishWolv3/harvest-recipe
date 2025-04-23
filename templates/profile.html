@@ -2,9 +2,47 @@
 {% extends "base.html" %}
 {% block content %}
     <h2>Profile</h2>
-    <form method="POST" enctype="multipart/form-data">
+    <p>Here is your profile overview. You may view your recipes, groups, and Ingredient Trip List here. 
+        If you would like, you may delete your account from our database. {{ user.username }}!</p>
+    
+    <h3>Your Recipes</h3>
+    
+        {% for recipe in user.recipe_set.all %}
+            
+                <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-outline-secondary">{{ recipe.title }}</a>
+                
+                {% if recipe.image %}
+                    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" width="100">
+                {% endif %}
+        {% empty %}
+            <li>You haven't created any recipes yet.</li>
+        {% endfor %}
+    
+
+    <hr>
+
+    <h3>Your Ingredient Trip List</h3>
+    <a href="{% url 'trip_list' %}">🧾 View Ingredient Trip List</a>
+
+    <hr>
+
+    <h3 class="text-center">Your Groups</h3>
+        {% if user.custom_groups.all %}
+            {% for group in user.custom_groups.all %}
+                <p class="text-center">
+                    <a href="{% url 'group_detail' group.id %}" class="btn btn-outline-secondary">{{ group.name }}</a>
+                </p>
+            {% endfor %}
+        {% else %}
+            <p class="text-center">You are not part of any groups.</p>
+        {% endif %}
+
+    <hr>
+
+    <form method="POST" action="{% url 'delete_account' %}">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Update Profile</button>
+        <button type="submit" onclick="return confirm('Are you sure you want to delete your account? This cannot be undone.')">
+            ❌ Delete My Account
+        </button>
     </form>
 {% endblock %}

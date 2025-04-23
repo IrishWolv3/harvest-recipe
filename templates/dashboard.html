@@ -2,12 +2,36 @@
 {% extends "base.html" %}
 {% block content %}
     <h1>Your Dashboard</h1>
-    <p>Welcome, {{ user.username }}!</p>
-    <ul>
-        {% for recipe in recipes %}
-            <li>{{ recipe.title }} - <a href="#">View</a></li>
+    <p>Welcome, {{ user.username }}! Here's a quick look at your recipe activity.</p>
+
+    <p>From here, you can manage your recipes, view community favorites, and stay on top of the weekly top dish voting. Use the Ingredient Trip List to keep track of what you need next time you shop, and don't forget to explore group discussions to connect with other food lovers.</p>
+
+    <h2>Your Recipes</h2>
+    
+        {% for recipe in user.recipe_set.all %}
+            
+                <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-outline-secondary">{{ recipe.title }}</a>
+                {% if recipe.image %}
+                    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" width="100">
+                {% endif %}
+            
+        <br>
         {% empty %}
-        <a href="{% url 'recipe_create' %}" class="btn btn-primary">Add Recipe</a>
+            <p>You haven’t added any recipes yet.</p>
+            <a href="{% url 'recipe_create' %}" class="btn btn-primary">Add Your First Recipe</a>
         {% endfor %}
-    </ul>
+    
+
+    <p><a href="{% url 'trip_list' %}" class="btn btn-outline-secondary">View Ingredient Trip List</a></p>
+    {% if top_recipe %}
+    <div style="border: 2px solid gold; padding: 10px; margin: 20px 0; background-color: #fff8dc;">
+        🏆 <strong>Top Dish of the Week!</strong>
+        <h3>{{ top_recipe.title }}</h3>
+        {% if top_recipe.image %}
+            <img src="{{ top_recipe.image.url }}" alt="{{ top_recipe.title }}" width="200">
+        {% endif %}
+        <p>{{ top_recipe.description }}</p>
+        <a href="{% url 'recipe_detail' top_recipe.id %}" class="btn btn-outline-success">See Top Dish of the Week</a>
+    </div>
+    {% endif %}
 {% endblock %}
