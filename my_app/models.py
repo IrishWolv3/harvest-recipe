@@ -72,6 +72,8 @@ class Group(models.Model):
 
     def __str__(self): # String representation
         return self.name
+
+
 # WeeklyVote Model
 class WeeklyVote(models.Model): 
     user = models.ForeignKey(User, on_delete=models.CASCADE) # ForeignKey to User model
@@ -83,7 +85,15 @@ class WeeklyVote(models.Model):
 
     def __str__(self):
         return f"{self.user.username} voted for {self.recipe.title} ({self.week_start})"
-    
+# For chatting in groups   
+class Message(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()  
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} in {self.group.name}: {self.content[:20]}"
 
 ###### Ingredient Trip System ######
 class IngredientTrip(models.Model):

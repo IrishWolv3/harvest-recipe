@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import recipe_list, recipe_create, recipe_update, recipe_delete, like_recipe, rate_recipe, group_list, group_create, group_detail, join_group, leave_group, view_trip_list, add_to_trip_list
+from .views import recipe_list, recipe_create, recipe_update, recipe_delete, like_recipe, rate_recipe, group_list, group_create, group_detail, join_group, leave_group, view_trip_list, add_to_trip_list, delete_from_trip_list
 
 urlpatterns = [
     path('', views.index, name='index'),            #### Frontend Paths
@@ -25,5 +25,6 @@ urlpatterns = [
     path('trip/', view_trip_list, name='trip_list'), ############ Ingredient Trip view ###############
     path('vote/<int:recipe_id>/', views.vote_recipe, name='vote_recipe'),
     path('trip/add/<int:ingredient_id>/', add_to_trip_list, name='add_to_trip'),
+    path('trip/delete/<int:item_id>/', views.delete_from_trip_list, name='delete_trip_item'),
     path('chatbot/', views.chatbot_response, name='chatbot_response'), ########## Chatbot view ###############
 ]

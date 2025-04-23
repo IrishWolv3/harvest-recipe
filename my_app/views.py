@@ -1,7 +1,7 @@
 from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Recipe, Group, WeeklyVote, Ingredient, IngredientTrip
+from .models import Recipe, Group, WeeklyVote, Ingredient, IngredientTrip, Message
 from .forms import CustomUserCreationForm, CustomAuthenticationForm, UserProfileForm, RecipeForm, GroupForm
 from datetime import date, timedelta
 from django.utils import timezone
@@ -125,7 +125,7 @@ def recipe_create(request):
                 ingredient, _ = Ingredient.objects.get_or_create(name=name)
                 recipe.ingredients.add(ingredient)
 
-        return redirect('dashboard')  # Or wherever you want to redirect
+        return redirect('dashboard') 
 
     # GET request
     return render(request, 'recipe_form.html')  # Render the recipe creation form template
@@ -189,7 +189,18 @@ def group_create(request): # Create a new group
 @login_required
 def group_detail(request, group_id):
     group = get_object_or_404(Group, id=group_id)
-    return render(request, 'groups/group_detail.html', {'group': group})
+    messages = Message.objects.filter(group=group).order_by('timestamp')
+
+    if request.method == 'POST':
+        content = request.POST.get('message')
+        if content:
+            Message.objects.create(group=group, user=request.user, content=content)
+            return redirect('group_detail', group_id=group.id)
+
+    return render(request, 'groups/group_detail.html', {
+        'group': group,
+        'messages': messages
+    })
 
 @login_required
 def join_group(request, group_id):
@@ -205,6 +216,9 @@ def leave_group(request, group_id):
 
 def group_main(request):
     return render(request, 'group_main.html')
+
+
+
 
 ########## Weekly Voting System ##########
 def get_current_week_start():
@@ -231,6 +245,7 @@ def weekly_top_recipe(request):
 
 
 ############################ Ingredient Trip System #############################
+@login_required
 def add_to_trip_list(request, ingredient_id):
     if request.user.is_authenticated:
         ingredient = get_object_or_404(Ingredient, id=ingredient_id)
@@ -242,6 +257,12 @@ def add_to_trip_list(request, ingredient_id):
 def view_trip_list(request):
     items = IngredientTrip.objects.filter(user=request.user)
     return render(request, 'trip_list.html', {'items': items})
+
+@login_required
+def delete_from_trip_list(request, item_id):
+    item = get_object_or_404(IngredientTrip, id=item_id, user=request.user)
+    item.delete()
+    return redirect('trip_list')  # or wherever your trip list page is
 
 
 

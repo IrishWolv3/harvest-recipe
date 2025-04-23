@@ -3,7 +3,15 @@
 <h2>Your Ingredient Trip List</h2>
 <ul>
   {% for item in items %}
-    <li>{{ item.ingredient.name }} (added on {{ item.added_on|date:"M d, Y" }})</li>
+    <li>
+      {{ item.ingredient.name }} (added on {{ item.added_on|date:"M d, Y" }})
+      <form method="post" action="{% url 'delete_trip_item' item.id %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" style="background:none;border:none;color:red;">
+          🗑️
+        </button>
+      </form>
+    </li>
   {% endfor %}
 </ul>
 {% endblock %}
