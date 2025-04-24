@@ -13,7 +13,7 @@ import spacy
 def index(request):
     return render(request, "index.html") # Render the index.html template
 
-@login_required
+@login_required # Ensure the user is logged in to access the dashboard
 def dashboard(request):
     if not request.user.is_authenticated:
         return redirect("login")  # Redirect if not logged in
@@ -62,7 +62,7 @@ def profile(request):
         form = UserProfileForm(instance=request.user) # Create an instance of the form
     return render(request, 'profile.html') # Render the profile.html template
 
-@login_required
+@login_required # Ensure the user is logged in to delete their account
 def delete_account(request):
     if request.method == 'POST':
         user = request.user
@@ -112,7 +112,7 @@ def recipe_detail(request, recipe_id):
     })
 
 @login_required
-def recipe_create(request):
+def recipe_create(request): # Ensure the user is logged in to create a recipe
     if request.method == 'POST':
         title = request.POST.get('title')
         description = request.POST.get('description')
@@ -120,7 +120,7 @@ def recipe_create(request):
         image = request.FILES.get('image')
         ingredient_names = request.POST.get('ingredients', '').split(',')
 
-        recipe = Recipe.objects.create(
+        recipe = Recipe.objects.create( # Create a new recipe instance
             title=title,
             description=description,
             instructions=instructions,
@@ -128,7 +128,7 @@ def recipe_create(request):
             author=request.user
         )
 
-        for name in ingredient_names:
+        for name in ingredient_names: # Loop through each ingredient name
             name = name.strip()
             if name:
                 ingredient, _ = Ingredient.objects.get_or_create(name=name)
@@ -196,45 +196,42 @@ def group_create(request): # Create a new group
     return render(request, 'groups/group_form.html', {'form': form}) # Render the group creation form template
 
 @login_required
-def group_detail(request, group_id):
+def group_detail(request, group_id): # View group details and messages
     group = get_object_or_404(Group, id=group_id)
     messages = Message.objects.filter(group=group).order_by('timestamp')
 
-    if request.method == 'POST':
-        content = request.POST.get('message')
+    if request.method == 'POST': # If the form has been submitted, get message content
+        content = request.POST.get('message') 
         if content:
             Message.objects.create(group=group, user=request.user, content=content)
             return redirect('group_detail', group_id=group.id)
 
-    return render(request, 'groups/group_detail.html', {
+    return render(request, 'groups/group_detail.html', { # Render the group detail template
         'group': group,
         'messages': messages
     })
 
-@login_required
+@login_required # Ensure the user is logged in to join a group
 def join_group(request, group_id):
     group = get_object_or_404(Group, id=group_id)
     group.members.add(request.user)
     return redirect('group_detail', group_id=group.id)
 
-@login_required
+@login_required # Ensure the user is logged in to leave a group
 def leave_group(request, group_id):
     group = get_object_or_404(Group, id=group_id)
     group.members.remove(request.user)
     return redirect('group_list')
 
-def group_main(request):
+def group_main(request): # Main view for group management
     return render(request, 'group_main.html')
-
-
-
 
 ########## Weekly Voting System ##########
 def get_current_week_start():
     today = timezone.now().date()
     return today - timedelta(days=today.weekday())  # Start on Monday
 
-def vote_recipe(request, recipe_id):
+def vote_recipe(request, recipe_id): # View to handle voting for a recipe
     if request.user.is_authenticated:
         # Get the start of the current week
         week_start = get_current_week_start()
@@ -254,6 +251,7 @@ def weekly_top_recipe(request):
 
 
 ############################ Ingredient Trip System #############################
+# View to add an ingredient to the trip list
 @login_required
 def add_to_trip_list(request, ingredient_id):
     if request.user.is_authenticated:
@@ -262,11 +260,12 @@ def add_to_trip_list(request, ingredient_id):
         return JsonResponse({'status': 'added'})
     return JsonResponse({'status': 'unauthenticated'})
 
+# View to display the trip list
 @login_required
 def view_trip_list(request):
     items = IngredientTrip.objects.filter(user=request.user)
     return render(request, 'trip_list.html', {'items': items})
-
+# View to remove an item from the trip list
 @login_required
 def delete_from_trip_list(request, item_id):
     item = get_object_or_404(IngredientTrip, id=item_id, user=request.user)
@@ -279,7 +278,7 @@ def delete_from_trip_list(request, item_id):
 # Load spaCy for NLP fallback
 nlp = spacy.load("en_core_web_sm")
 
-RESPONSE_DICT = {
+RESPONSE_DICT = { # Predefined responses for common questions
     "how do i add a recipe": "Go to your dashboard and click on 'Add Recipe'.",
     "what is ingredient trip": "It's a list where you can save ingredients you need to buy.",
     "how do i vote for a dish": "Visit the 'Top Dish' section in the community tab and vote for your favorite!",
@@ -304,14 +303,14 @@ RESPONSE_DICT = {
     "what are likes": "Likes are quick reactions users can give to recipes they enjoy.",
 }
 
-def handle_with_nlp(user_input):
+def handle_with_nlp(user_input): # Fallback to NLP for vague questions
     doc = nlp(user_input)
     keywords = ['tomato', 'onion', 'chicken', 'beef', 'rice', 'garlic']  # add more
     if any(word.lower() in user_input for word in keywords):
         return f"Looking for recipes with {user_input}? Try the search bar above!"
     return "Sorry, I didn’t get that. Try rephrasing?"
 
-def chatbot_response(request):
+def chatbot_response(request): # Handle chatbot responses
     user_input = request.GET.get("question", "").lower()
     topic = get_topic_from_question(user_input)
 
@@ -345,7 +344,7 @@ def chatbot_response(request):
 
     return JsonResponse({"response": response})
 
-def get_topic_from_question(question):
+def get_topic_from_question(question): # Determine the topic from the question
     keywords = {
         "recipe": ["recipe", "edit", "delete", "add", "save"],
         "group": ["group", "join", "leave"],
