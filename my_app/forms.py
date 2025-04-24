@@ -43,8 +43,8 @@ class RecipeForm(forms.ModelForm):
         model = Recipe
         fields = ['title', 'description', 'ingredients', 'instructions', 'image']
         #exclude = ['ingredients']
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs): # Initialize the form with the instance
+        super().__init__(*args, **kwargs) ## Call the parent constructor
         if self.instance.pk:
             # Pre-fill ingredients as comma-separated names without duplicates
             self.fields['ingredients'].initial = ', '.join(

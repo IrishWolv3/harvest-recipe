@@ -2,18 +2,23 @@
 
 {% block content %}
 
-<h2>{{ recipe.title }}</h2>
+<h2 class="text-center mt-5">{{ recipe.title }}</h2>
 
 {% if recipe.image %}
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" width="400">
 {% endif %}
+<br>
+<p class="text-center">{{ recipe.description }}</p>
+<p class="text-center">Likes: {{ recipe.likes.count }}</p>
+<p class="text-center">Rating: {{ recipe.rating|floatformat:1 }} ({{ recipe.rating_count }} ratings)</p>
 
-<p>{{ recipe.description }}</p>
-<p>Likes: {{ recipe.likes.count }}</p>
-<p>Rating: {{ recipe.rating|floatformat:1 }} ({{ recipe.rating_count }} ratings)</p>
-
-<p><strong>Ingredients:</strong></p>
-<ul class="ingredient-list">
+<p class="text-center mt-5"><strong>Ingredients:</strong></p>
+<ul class="text-center">
     {% for ingredient in recipe.ingredients.all %}
         <li class="ingredient-item">
             <span>{{ ingredient.name }}</span>
@@ -41,9 +46,9 @@
 <p><strong>Instructions:</strong> {{ recipe.instructions }}</p>
 
 <!-- Like Button -->
-<form method="POST" action="{% url 'like_recipe' recipe.id %}">
+<form method="POST" action="{% url 'like_recipe' recipe.id %}" class="text-center mt-5">
     {% csrf_token %}
-    <button type="submit">
+    <button type="submit" class="btn btn-primary">
         {% if user in recipe.likes.all %}
             Unlike
         {% else %}
@@ -53,21 +58,32 @@
 </form>
 
 <!-- Rating Form -->
-<form method="POST" action="{% url 'rate_recipe' recipe.id %}">
+<form method="POST" action="{% url 'rate_recipe' recipe.id %}" class="text-center mt-5">
     {% csrf_token %}
     <input type="number" name="rating" min="1" max="5" step="0.1" required>
-    <button type="submit">Rate</button>
+    <button type="submit" class="btn btn-primary">Rate</button>
 </form>
-
+<hr>
 <!-- Weekly Voting Form -->
 <form method="POST" action="{% url 'vote_recipe' recipe.id %}">
     {% csrf_token %}
-    <button type="submit">Vote as Top Dish of the Week</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button type="submit" class="btn btn-primary">Vote as Top Dish of the Week</button>
 </form>
-
+<hr>
 <!-- Navigation -->
-<a href="{% url 'recipe_update' recipe.id %}">Edit</a>
-<a href="{% url 'recipe_delete' recipe.id %}">Delete</a>
-<a href="{% url 'recipe_list' %}">Back to Recipes</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="{% url 'recipe_update' recipe.id %}" class="btn btn-primary">Edit</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="{% url 'recipe_delete' recipe.id %}" class="btn btn-primary">Delete</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="{% url 'recipe_list' %}" class="btn btn-primary">Back to Recipes</a>
 
 {% endblock %}

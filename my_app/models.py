@@ -53,7 +53,7 @@ class Recipe(models.Model):
     rating = models.FloatField(default=0.0)
     rating_count = models.IntegerField(default=0)
 
-    def update_rating(self, new_rating):
+    def update_rating(self, new_rating): # Method to update the recipe rating
         total_rating = self.rating * self.rating_count + new_rating
         self.rating_count += 1
         self.rating = total_rating / self.rating_count
@@ -86,7 +86,7 @@ class WeeklyVote(models.Model):
     def __str__(self):
         return f"{self.user.username} voted for {self.recipe.title} ({self.week_start})"
 # For chatting in groups   
-class Message(models.Model):
+class Message(models.Model): # Group chat message model
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()  

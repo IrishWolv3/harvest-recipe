@@ -1,20 +1,21 @@
 <!-- index.html -->
 {% extends "base.html" %}
 {% block content %}
-    <h1>Welcome to HarvestArk</h1>
-    <p>Share and discover amazing recipes from the community!</p>
-
-    <p>HarvestArk is your go-to destination for homegrown culinary inspiration. Whether you're a kitchen novice or a seasoned chef, our platform offers a space to explore creative meals, try new ingredients, and celebrate the joy of cooking together.</p>
-
-    <p>Browse thousands of recipes submitted by users like you, complete with step-by-step instructions and ingredient breakdowns. You can save your favorites, rate others’ dishes, and even create a personalized Ingredient Trip List for your next grocery run.</p>
-
-    <p>Join the HarvestArk community today and contribute to our ever-growing archive of delicious creations. Let’s cook, share, and grow—one dish at a time!</p>
+    <h1 class="text-center mt-5">Welcome to HarvestArk</h1>
+    <br>
+    <p class="text-center mt-5">Share and discover amazing recipes from the community!</p>
+    <br>
+    <p class="text-center mt-5">HarvestArk is your go-to destination for homegrown culinary inspiration. Whether you're a kitchen novice or a seasoned chef, our platform offers a space to explore creative meals, try new ingredients, and celebrate the joy of cooking together.</p>
+    <br>
+    <p class="text-center mt-5">Browse thousands of recipes submitted by users like you, complete with step-by-step instructions and ingredient breakdowns. You can save your favorites, rate others’ dishes, and even create a personalized Ingredient Trip List for your next grocery run.</p>
+    <br>
+    <p class="text-center mt-5">Join the HarvestArk community today and contribute to our ever-growing archive of delicious creations. Let’s cook, share, and grow—one dish at a time!</p>
 
     <div class="text-center mt-5">
         {% if not user.is_authenticated %}
-            <a href="/register/" class="btn btn-tan m-2">Register</a>
+            <a href="/register/" class="btn btn-outline-secondary m-2">Register</a>
             <a href="/login/" class="btn btn-outline-secondary m-2">Login</a>
         {% endif %}
     </div>
-
+    <br><br><br><br>
     {% endblock %}

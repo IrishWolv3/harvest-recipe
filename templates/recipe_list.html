@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Recipes</h2>
-<a href="{% url 'recipe_create' %}">Create a New Recipe</a>
+<h2 class="text-center mt-5">Recipes</h2>
 
 {% if top_recipe %}
     <div style="border: 2px solid gold; padding: 10px; margin: 20px 0; background-color: #fff8dc;">
@@ -14,9 +13,8 @@
         <a href="{% url 'recipe_detail' top_recipe.id %}">View</a>
     </div>
 {% endif %}
-
 <form method="get" action="{% url 'recipe_list' %}" style="margin-bottom: 20px;">
-    <input type="text" name="q" placeholder="Search recipes..." value="{{ query }}" />
+    <a href="{% url 'recipe_create' %}" class="btn btn-outline-secondary m-2">Create a New Recipe</a><input type="text" name="q" placeholder="Search recipes..." value="{{ query }}" />
     <select name="rating">
         <option value="">Filter by rating</option>
         <option value="1" {% if filter_rating == "1" %}selected{% endif %}>1+</option>
@@ -24,7 +22,7 @@
         <option value="3" {% if filter_rating == "3" %}selected{% endif %}>3+</option>
         <option value="4" {% if filter_rating == "4" %}selected{% endif %}>4+</option>
     </select>
-    <button type="submit">Apply</button>
+    <button type="submit" class="btn btn-outline-secondary m-2">Apply</button>
 </form>
 
 <!-- Grid container -->

@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="static/css/styles.css" />
     <title>HarvestArk</title>
 </head>
 <body>
@@ -38,7 +40,10 @@
             <ul class="navbar-nav text-center">
                 {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link text-dark" href="/profile/">Profile</a></li>
-                    <li class="nav-item"><a class="nav-link text-dark" href="/logout/">Logout</a></li>
+                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-link nav-link">Logout</button>
+                    </form> <!-- <li class="nav-item"><a class="nav-link text-dark" href="/logout/">Logout</a></li> -->
                 {% else %}
                     <li class="nav-item"><a class="nav-link text-dark" href="/login/">Login</a></li>
                     <li class="nav-item"><a class="nav-link text-dark" href="/register/">Register</a></li>
@@ -50,9 +55,8 @@
     <div class="container mt-4">
         {% block content %}{% endblock %}
     </div>
-    <br><br><br><br><br><br><br>
     <footer>
-        <p>&copy; 2025 HarvestArk. All rights reserved.</p>
+        <p class="text-center mt-5" style="background-color: #f5deb3;">&copy; 2025 HarvestArk. All rights reserved.</p>
     </footer>
 <!-- Chatbot -->
 <style>

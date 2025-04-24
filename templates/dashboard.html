@@ -1,12 +1,12 @@
 <!-- templates/dashboard.html -->
 {% extends "base.html" %}
 {% block content %}
-    <h1>Your Dashboard</h1>
-    <p>Welcome, {{ user.username }}! Here's a quick look at your recipe activity.</p>
+    <h1 class="text-center mt-5">Your Dashboard</h1>
+    <p class="text-center mt-5">Welcome, {{ user.username }}! Here's a quick look at your recipe activity.</p>
 
-    <p>From here, you can manage your recipes, view community favorites, and stay on top of the weekly top dish voting. Use the Ingredient Trip List to keep track of what you need next time you shop, and don't forget to explore group discussions to connect with other food lovers.</p>
+    <p class="text-center mt-5">From here, you can manage your recipes, view community favorites, and stay on top of the weekly top dish voting. Use the Ingredient Trip List to keep track of what you need next time you shop, and don't forget to explore group discussions to connect with other food lovers.</p>
 
-    <h2>Your Recipes</h2>
+    <h2 class="text-center mt-5">Your Recipes</h2>
     
         {% for recipe in user.recipe_set.all %}
             
@@ -17,12 +17,24 @@
             
         <br>
         {% empty %}
-            <p>You haven’t added any recipes yet.</p>
-            <a href="{% url 'recipe_create' %}" class="btn btn-primary">Add Your First Recipe</a>
-        {% endfor %}
-    
+            <p class="text-center mt-5">You haven’t added any recipes yet.</p>
+            <br>
 
-    <p><a href="{% url 'trip_list' %}" class="btn btn-outline-secondary">View Ingredient Trip List</a></p>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{% url 'recipe_create' %}" class="btn btn-primary" class="text-center mt-5">Add Your First Recipe</a>
+        {% endfor %}
+    <br><br><br>
+
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{% url 'trip_list' %}" class="btn btn-primary">View Ingredient Trip List</a></p>
     {% if top_recipe %}
     <div style="border: 2px solid gold; padding: 10px; margin: 20px 0; background-color: #fff8dc;">
         🏆 <strong>Top Dish of the Week!</strong>
@@ -34,4 +46,5 @@
         <a href="{% url 'recipe_detail' top_recipe.id %}" class="btn btn-outline-success">See Top Dish of the Week</a>
     </div>
     {% endif %}
+    <br><br><br>
 {% endblock %}

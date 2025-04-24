@@ -47,7 +47,7 @@ def login_view(request):
 # User Logout View
 def logout_view(request):
     logout(request)
-    return redirect('index')
+    return redirect('logout.html')
 
 ################################## User Profile Management #############################
 # Profile Management View
@@ -64,10 +64,11 @@ def profile(request):
 
 @login_required
 def delete_account(request):
-    user = request.user
     if request.method == 'POST':
+        user = request.user
+        logout(request)  # Log them out before deleting
         user.delete()
-        return redirect('home')  # or wherever you want to land them
+        return render(request, 'account_deleted.html')  # ✅ Render this
     return redirect('profile')
 
 ############################ Recipe Management #############################

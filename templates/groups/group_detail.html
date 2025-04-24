@@ -1,14 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>{{ group.name }}</h2>
-<p>{{ group.description }}</p>
-<p>Members: {{ group.members.count }}</p>
+<h2 class="text-center mt-5">{{ group.name }}</h2>
+<p class="text-center mt-5">{{ group.description }}</p>
+<p class="text-center mt-5">Members: {{ group.members.count }}</p>
 
 {% if request.user in group.members.all %}
-    <a href="{% url 'leave_group' group.id %}">Leave Group</a>
+<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="{% url 'leave_group' group.id %}" class="btn btn-primary">Leave Group</a>
 
-    <h3>Group Chat</h3>
+    <h3 class="text-center mt-5">Group Chat</h3>
     <div style="border:1px solid #ccc; padding:10px; max-height:300px; overflow-y:auto;">
         {% for msg in messages %}
             <p><strong>{{ msg.user.username }}</strong>: {{ msg.content }} <em style="font-size:small;">({{ msg.timestamp|date:"M d, H:i" }})</em></p>
@@ -20,7 +27,7 @@
     <form method="POST" style="margin-top: 10px;">
         {% csrf_token %}
         <textarea name="message" rows="2" style="width: 100%;" placeholder="Type a message..." required></textarea>
-        <button type="submit">Send</button>
+        <button type="submit" class="btn btn-primary">Send</button>
     </form>
 
 {% else %}

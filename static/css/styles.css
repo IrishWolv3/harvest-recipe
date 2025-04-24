@@ -1,28 +1,55 @@
-/* static/styles.css */
+/* Base styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
-    padding: 0;
-    background-color: #fdf6e3;
-}
-h3 {
-    color: #333;
+    padding: 20px 0 40px;
+    background-color: #f9f9f9;
     text-align: center;
 }
+  
+h1, h2, h3, h4, h5, h6, p, a, li {
+    text-align: center;
+    color: #333;
+}
+  
+.container, .profile-section, .groups-section, .welcome-section {
+    max-width: 900px;
+    margin: auto;
+    padding: 25px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+  
+/* Navigation */
+nav, .section-header {
+    background-color: #f0e9d2;
+    padding: 15px 20px;
+    border-bottom: 2px solid #e2d5b9;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+  
 nav ul {
     list-style: none;
-    background: #333;
     padding: 10px;
     text-align: center;
 }
+  
 nav ul li {
     display: inline;
     margin: 0 10px;
 }
-nav ul li a {
-    color: white;
+  
+nav ul li a,
+.navbar-nav .nav-link {
+    color: black !important;
     text-decoration: none;
+    font-weight: bold;
+    padding: 12px 0;
 }
+  
+/* Footer */
 footer {
     background: #333;
     color: white;
@@ -32,20 +59,55 @@ footer {
     bottom: 0;
     width: 100%;
 }
-/* Styles for the ingredient list */
-/* Ensure the ingredient list container takes full width */
+  
+/* Buttons */
+button, .btn, .btn-outline-secondary, .btn-primary, .btn-tan {
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+}
+  
+.btn-outline-secondary {
+    background: none;
+    border: 2px solid #ccc;
+    color: #333;
+    text-align: center;
+}
+  
+.btn-outline-secondary:hover {
+    background-color: #f0f0f0;
+}
+  
+.btn-primary {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+}
+  
+.btn-tan {
+    background-color: #deb887;
+    color: white;
+    border: none;
+}
+  
+.btn-tan:hover {
+    background-color: #d2b48c;
+}
+  
+/* Ingredient List */
 .ingredient-list {
     list-style-type: none;
     padding: 0;
     margin: 0;
-    width: 100%; /* Make it take up the full width */
-    max-width: 100%; /* Prevent overflow */
+    width: 100%;
 }
-
-/* Add sufficient width to each ingredient item */
+  
 .ingredient-item {
     display: flex;
-    justify-content: space-between; /* Space out ingredient name and button */
+    justify-content: space-between;
     align-items: center;
     padding: 10px;
     margin-bottom: 10px;
@@ -53,51 +115,50 @@ footer {
     border-radius: 5px;
     background-color: #f9f9f9;
     transition: background-color 0.3s ease;
-    width: 100%; /* Ensure the items are not slim */
-    box-sizing: border-box; /* Include padding and border in the element's total width */
+    box-sizing: border-box;
 }
-
-/* Hover effect for ingredient item */
+  
 .ingredient-item:hover {
     background-color: #f0f0f0;
 }
-
-/* Style for buttons */
+  
+.ingredient-item span {
+    flex: 1;
+    padding-right: 15px;
+}
+  
+/* Add to Trip Button */
 .add-to-trip {
-    padding: 10px 20px; /* Increase padding for better visibility */
     background-color: #4CAF50;
     color: white;
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
     font-size: 16px;
-    min-width: 150px; /* Set a minimum width for buttons */
+    min-width: 150px;
 }
-
+  
 .add-to-trip:hover {
     background-color: #45a049;
 }
-
-/* Add margins or extra padding for better readability */
-.ingredient-item span {
-    flex: 1;
-    padding-right: 15px; /* Add space between name and button */
-}
-
-/* Recipe and top dish UI */
+  
+/* Recipe Grid + Cards */
 .recipe-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-  }
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    margin-top: 30px;
+    padding: 0 20px;
+}
   
 .recipe-card {
-    background: #f9f9f9;
+    background-color: white;
     border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     padding: 15px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    text-align: center;
+    transition: transform 0.2s ease;
+}
+  
+.recipe-card:hover {
+    transform: scale(1.02);
 }
   
 .recipe-img, .top-dish-img {
@@ -106,16 +167,7 @@ footer {
     margin-top: 10px;
 }
   
-.view-btn {
-    display: inline-block;
-    margin-top: 10px;
-    background-color: #4CAF50;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 8px;
-    text-decoration: none;
-}
-  
+/* Top Dish Highlight */
 .top-dish-card {
     background-color: #fffbe6;
     padding: 20px;
@@ -123,45 +175,21 @@ footer {
     border-radius: 15px;
     margin-bottom: 30px;
 }
-body {
-    background-color: #fdf6e3;
-}
-
-.navbar-nav .nav-item {
-    flex: 1;
-    text-align: center;
-}
-
-.navbar-nav .nav-link {
-    color: black !important;
-    font-weight: bold;
-    padding: 12px 0;
-}
-
-.btn-tan {
-    background-color: #deb887;
+  
+/* Trip List & Group Buttons */
+.trip-list a, .group-btns button {
+    display: inline-block;
+    margin: 5px 10px 5px 0;
+    padding: 10px 14px;
+    background-color: #f5a623;
     color: white;
     border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
 }
-
-.btn-tan:hover {
-    background-color: #d2b48c;
-    color: white;
+  
+.trip-list a:hover, .group-btns button:hover {
+    background-color: #e59400;
 }
-
-.container {
-    background-color: #fffaf0;
-    padding: 20px;
-    border-radius: 8px;
-}
-/* Center all text globally */
-body, h1, h2, h3, h4, h5, h6, p, a, li {
-    text-align: center;
-}
-
-/* Uniform button style if needed */
-.btn-outline-secondary {
-    padding: 10px 20px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
+  

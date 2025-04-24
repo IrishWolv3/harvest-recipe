@@ -1,18 +1,21 @@
 from django.urls import path
 from . import views
 from .views import delete_account, recipe_list, recipe_create, recipe_update, recipe_delete, like_recipe, rate_recipe, group_list, group_create, group_detail, join_group, leave_group, view_trip_list, add_to_trip_list, delete_from_trip_list
+from django.contrib.auth.views import LogoutView
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('', views.index, name='index'),            #### Frontend Paths
     path('dashboard/', views.dashboard, name='dashboard'),
     path('login/', views.login_view, name='login'), #### Authentication Paths
-    path('logout/', views.logout_view, name='logout'),
+    path('logout/', LogoutView.as_view(next_page='logged_out'), name='logout'),
+    path('logged-out/', TemplateView.as_view(template_name='logout.html'), name='logged_out'),
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
     path('delete-account/', views.delete_account, name='delete_account'),
-    path('recipe_list/', recipe_list, name='recipe_list'),       ############## Recipe views   # Public recipe list ###############
-    path('<int:recipe_id>/', views.recipe_detail, name='recipe_detail'),    # Public recipe details
-    path('create/', recipe_create, name='recipe_create'),  # Requires login
+    path('recipe_list/', recipe_list, name='recipe_list'),       ############## Recipe views ###############
+    path('<int:recipe_id>/', views.recipe_detail, name='recipe_detail'),
+    path('create/', recipe_create, name='recipe_create'), 
     path('<int:recipe_id>/edit/', recipe_update, name='recipe_update'),  
     path('<int:recipe_id>/delete/', recipe_delete, name='recipe_delete'), 
     path('<int:recipe_id>/like/', like_recipe, name='like_recipe'),  
